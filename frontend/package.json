@@ -1,0 +1,8 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "serve -s build",
+    "build": "echo 'build placeholder'"
+  }
+}

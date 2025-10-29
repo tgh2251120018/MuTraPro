@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+  service-request-service:
+    build: ./order-service
+    container_name: service_request
+    ports:
+      - "5000:5000"
+    environment:
+      - NOTIFICATION_URL=http://notification-service:4001/notify
+  task-assignment-service:
+    build: ./task-assignment-service
+    ports:
+      - "5101:5101"
+  file-service:
+    build: ./file-service
+    ports:
+      - "8000:8000"
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "4000:4000"
+    environment:
+      - NOTIFICATION_URL=http://notification-service:4001/notify
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "4001:4001"
+  studio-service:
+    build: ./studio-service
+    ports:
+      - "5100:5100"
+  reporting-service:
+    build: ./reporting-service
+    ports:
+      - "5200:5200"
+  feedback-service:
+    build: ./feedback-service
+    ports:
+      - "5300:5300"
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
