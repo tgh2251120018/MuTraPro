@@ -1,0 +1,11 @@
+./.git/
+./.gitignore
+
+./target/
+# Local IDE files
+.idea/
+.vscode/
+*.iml
+
+# Log files
+*.log

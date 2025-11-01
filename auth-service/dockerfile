@@ -1,0 +1,37 @@
+# === GIAI ĐOẠN 1: Xây dựng (Build) ===
+# Sử dụng image chứa JDK 21 và một phiên bản Maven ổn định
+FROM maven:3.9.8-eclipse-temurin-21 AS build
+
+# Đặt thư mục làm việc bên trong container
+WORKDIR /app
+
+# Tối ưu hóa cache:
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Sao chép phần còn lại của mã nguồn
+COPY src ./src
+
+# Thực thi build và đóng gói (bỏ qua tests)
+RUN mvn package -DskipTests
+
+# === GIAI ĐOẠN 2: Chạy (Runtime) ===
+# Bắt đầu từ image siêu nhỏ chỉ chứa JRE 21 (Môi trường chạy Java 21)
+FROM eclipse-temurin:21-jre-jammy AS runtime
+
+# Đặt thư mục làm việc
+WORKDIR /app
+
+RUN mkdir -p /app/.data
+
+# [INSTRUCTION_B]
+# !!! VẪN CẦN THAY THẾ TÊN TỆP NÀY !!!
+# Đảm bảo tên này khớp với tệp .jar đã được tạo ra ở Giai đoạn 1.
+# [INSTRUCTION_E]
+COPY --from=build /app/target/authservice-0.0.1-SNAPSHOT.jar app.jar
+
+# Báo cho Docker biết ứng dụng này sẽ lắng nghe trên cổng 8080
+EXPOSE 8080
+
+# Lệnh để chạy ứng dụng khi container khởi động
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "jwt.refresh-token.expiration",
+            "type": "java.lang.String",
+            "description": "A time-value dictating the expiration of the refresh token"
+        },
+        {
+            "name": "jwt.expiration",
+            "type": "java.lang.String",
+            "description": "A time-value dictating the expiration of the token"
+        },
+        {
+            "name": "jwt.secret-key",
+            "type": "java.lang.String",
+            "description": "Secret key for "
+        }
+    ]
+}
