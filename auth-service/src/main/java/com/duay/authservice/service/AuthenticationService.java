@@ -1,21 +1,25 @@
 package com.duay.authservice.service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.duay.authservice.dto.AuthenticationRequest;
 import com.duay.authservice.dto.AuthenticationResponse;
 import com.duay.authservice.dto.RegisterRequest;
 import com.duay.authservice.dto.RegisterResponse;
 import com.duay.authservice.extra.RegisterResultCode;
-import com.duay.authservice.model.Auth.Role;
+import com.duay.authservice.model.Auth.AccountType;
 import com.duay.authservice.model.Auth.User;
 import com.duay.authservice.repository.UserCredentialRepository;
+import com.duay.authservice.repository.UserProfileRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,19 +31,27 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
     private final UserCredentialRepository userCredentialRepository;
+    private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ProfileService profileService;
 
+    /**
+     * Register Function
+     *
+     */
+    @Transactional
     public RegisterResponse register(RegisterRequest request) {
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
-                .role(Role.USER)
+                .accountType(AccountType.USER)
                 .build();
 
         userCredentialRepository.save(user);
+        profileService.CreateProfile(user);
 
         return RegisterResponse.builder()
                 .resultCode(RegisterResultCode.SUCCESS)
@@ -59,13 +71,17 @@ public class AuthenticationService {
         );
         var user = userCredentialRepository.findByUsername(request.getUsername())
                 .orElseThrow();
-
-        var jwtToken = jwtService.generateToken(user);
+        var userProfile = userProfileRepository.findById(user.getUserId())
+                .orElseThrow(() -> new RuntimeException("UserProfile not found for user"));
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("account_type", user.getAccountType());
+        extraClaims.put("role", userProfile.getRole());
+        var jwtToken = jwtService.generateToken(extraClaims, user);
+        // var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
-                //.user("")
                 .build();
     }
 

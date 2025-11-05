@@ -1,5 +1,5 @@
 package com.duay.authservice.model.Auth;
 
-public enum Role {
+public enum AccountType {
     USER, ADMIN
 }
