@@ -1,0 +1,20 @@
+{
+  "name": "service-request-management-service",
+  "version": "1.0.0",
+  "description": "a module for MutraPro microservice architechture",
+  "main": ".src/service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node .src/service.js",
+    "dev": "nodemon .src/service.js"
+  },
+  "keywords": [
+    "request-manage"
+  ],
+  "author": "MutraPro",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
