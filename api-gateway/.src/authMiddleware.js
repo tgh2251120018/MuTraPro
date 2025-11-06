@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { publicPaths } = require('./security-config');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
+const JWT_SECRET_BUFFER = Buffer.from(JWT_SECRET, 'base64');
 /**
  * A global middleware to verify JWT tokens.
  * It reads 'publicPaths' from the security config to bypass auth.
@@ -21,8 +21,9 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).send({ error: 'Unauthorized: No token provided.' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, payload) => {
+    jwt.verify(token, JWT_SECRET_BUFFER, (err, payload) => {
         if (err) {
+            console.error('JWT Verification Error:', err);
             return res.status(401).send({ error: 'Unauthorized: Invalid token.' });
         }
 
