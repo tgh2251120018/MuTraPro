@@ -1,55 +1,40 @@
-// app.js
-// [INSTRUCTION_B]
-// This file will act as your "Product Service".
-// It MUST run on the port you defined in your gateway's route-config.js
-// [INSTRUCTION_E]
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db.config');
+
+// Import API routes
+const requestRoutes = require('./routes/request.routes');
+
+// Initialize Express app
 const app = express();
-const PORT = 3002; // <-- Port của Product Service
 
-/**
- * A test endpoint to verify proxy headers.
- * It reads the custom headers (X-User-Id, etc.) that the
- * API Gateway is supposed to add.
- */
+// Define PORT
+const PORT = process.env.PORT || 3002;
+
+// --- Middlewares ---
+// Enable Cross-Origin Resource Sharing
+app.use(cors());
+// Parse incoming JSON requests
+app.use(express.json());
+// Parse URL-encoded requests
+app.use(express.urlencoded({ extended: true }));
+
+// --- Database Connection ---
+connectDB();
+
+// --- API Routes ---
+// Mount the request routes under the /api/requests path
+app.use('/requests', requestRoutes);
+
+// --- Root Endpoint ---
 app.get('/', (req, res) => {
-
-    // [INSTRUCTION_B]
-    // IMPORTANT: Node.js and Express automatically convert
-    // all incoming header keys to lowercase.
-    // So 'X-User-Id' becomes 'x-user-id'.
-    // [INSTRUCTION_E]
-
-    // 1. Get the custom headers sent by the Gateway
-    const userId = req.headers['x-user-id'];
-    const userRole = req.headers['x-user-role'];
-    const accountType = req.headers['x-account-type'];
-
-    // 2. Get a standard header to prove proxying worked
-    const userAgent = req.headers['user-agent'];
-
-    // Construct the JSON payload
-    const payload = {
-        message: "Product Service đã nhận được request!",
-        headers_from_gateway: {
-            // [INSTRUCTION_B]
-            // We use '|| null' to gracefully handle cases
-            // where the header might be missing (e.g., a public route).
-            // [INSTRUCTION_E]
-            'x-user-id': userId || null,
-            'x-user-role': userRole || null,
-            'x-account-type': accountType || null
-        },
-        other_headers: {
-            'user-agent': userAgent
-        }
-    };
-
-    res.json(payload);
+    res.json({ message: 'Welcome to the Service Request Management API.' });
 });
 
-// Start the Product Service
+// --- Start Server ---
 app.listen(PORT, () => {
-    console.log(`(Mock) Product Service đang chạy trên http://localhost:${PORT}`);
-    console.log(`Sẵn sàng nhận request tại http://localhost:${PORT}/test-proxy`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

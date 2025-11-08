@@ -25,14 +25,10 @@ const routes = [
         }
     },
     {
-        // --- Product Service (Simple Rule) ---
-        prefix: '/service',
+        // --- Request Service (Simple Rule) ---
+        prefix: '/requests',
         proxyConfig: {
-            target: 'http://localhost:3002',
-            pathRewrite: {
-                // Gateway: /products/123 -> Service: /123
-                '^/service': '',
-            }
+            target: 'http://localhost:3002'
         }
     },
     {

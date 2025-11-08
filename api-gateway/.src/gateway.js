@@ -14,6 +14,10 @@ const PORT = 8000;
 
 // 1. Apply global authentication middleware
 app.use(authMiddleware);
+app.use((req, res, next) => {
+    console.log(`[DEBUG TRACER]: Path đã qua auth: ${req.method} ${req.path}`);
+    next();
+});
 
 // [INSTRUCTION_B]
 // Define default options that will be applied to EVERY proxy.
