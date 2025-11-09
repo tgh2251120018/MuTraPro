@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => {
     jwt.verify(token, JWT_SECRET_BUFFER, (err, payload) => {
         if (err) {
             console.error('JWT Verification Error:', err);
-            return res.status(401).send({ error: 'Unauthorized: Invalid token.' });
+            return res.status(401).send({ error: 'Unauthorized: ' + err.message });
         }
 
         req.user = {

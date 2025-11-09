@@ -9,9 +9,7 @@ const publicPaths = [
     '/health',
 
     '/auth/login',
-    '/auth/register',
-
-    '/lmao'
+    '/auth/register'
 ];
 
 module.exports = {
