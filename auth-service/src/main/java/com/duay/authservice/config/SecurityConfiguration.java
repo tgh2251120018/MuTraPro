@@ -1,8 +1,8 @@
 package com.duay.authservice.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration; // Cập nhật import
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider; // Cập nhật import
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,13 +51,13 @@ public class SecurityConfiguration {
     // public CorsConfigurationSource corsConfigurationSource() {
     //     CorsConfiguration configuration = new CorsConfiguration();
     //     // IMPORTANT: Specify the exact origins of your clients
-    //     configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://your-webapp-domain.com")); 
+    //     configuration.setAllowedOrigins(List.of("http://localhost:8000"));
     //     // Allowed HTTP methods
-    //     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
+    //     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     //     // Allowed HTTP headers
     //     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     //     // Allow credentials (e.g., cookies, authorization headers)
-    //     configuration.setAllowCredentials(true); 
+    //     configuration.setAllowCredentials(true);
     //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     //     source.registerCorsConfiguration("/**", configuration); // Apply this configuration to all paths
     //     return source;

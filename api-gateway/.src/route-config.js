@@ -11,16 +11,16 @@ const routes = [
         // --- Auth Service (Complex Rules) ---
         prefix: '/auth',
         proxyConfig: {
-            target: `http://localhost:8080`,
+            target: `http://localhost:8080/auth`,
             pathRewrite: {
                 // Gateway: /auth/change-password -> Service: /private/change-password
-                '^/auth/change-password': '/private/change-password',
+                '^/change-password': '/private/change-password',
 
                 // Gateway: /auth/login -> Service: /public/login
-                '^/auth/login': '/auth/public/login',
+                '^/login': 'public/login',
 
                 // Gateway: /auth/register -> Service: /public/register
-                '^/auth/register': '/auth/public/register',
+                '^/register': 'public/register',
             }
         }
     },
@@ -28,22 +28,22 @@ const routes = [
         // --- Request Service (Simple Rule) ---
         prefix: '/requests',
         proxyConfig: {
-            target: 'http://localhost:3002'
+            target: 'http://localhost:3002/requests'
         }
     },
-    {
-        // --- Order Service (Example of another simple rule) ---
-        prefix: '/orders',
-        proxyConfig: {
-            target: 'http://localhost:3003',
-            pathRewrite: {
-                '^/orders': '',
-            }
-        }
-    }
-    // [INSTRUCTION_B]
-    // Add any new services here by adding a new object to this array.
-    // [INSTRUCTION_E]
+    //     {
+    //         // --- Order Service (Example of another simple rule) ---
+    //         prefix: '/orders',
+    //         proxyConfig: {
+    //             target: 'http://localhost:3003',
+    //             pathRewrite: {
+    //                 '^/orders': '',
+    //             }
+    //         }
+    //     }
+    //     // [INSTRUCTION_B]
+    //     // Add any new services here by adding a new object to this array.
+    //     // [INSTRUCTION_E]
 ];
 
 module.exports = routes;
