@@ -13,12 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserProfileResponse {
 
-    @JsonProperty("username")
-    private String username;
     @JsonProperty("display_name")
     private String displayName;
-    @JsonProperty("bio")
-    private String bio;
-    @JsonProperty("avatar_url")
-    private String avatarUrl;
+    @JsonProperty("role")
+    private String role;
 }

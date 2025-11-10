@@ -1,5 +1,4 @@
-// File: com/duay/authservice/config/UuidV7GeneratorType.java
-package com.duay.authservice.config;
+package com.duay.authservice.utils;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

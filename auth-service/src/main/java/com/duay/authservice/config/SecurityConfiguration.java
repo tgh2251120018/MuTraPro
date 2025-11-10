@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/public/**")
+                .requestMatchers("/auth/public/**", "/user-profile/public/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

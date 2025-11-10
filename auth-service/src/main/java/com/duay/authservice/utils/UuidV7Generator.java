@@ -1,4 +1,4 @@
-package com.duay.authservice.config;
+package com.duay.authservice.utils;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;

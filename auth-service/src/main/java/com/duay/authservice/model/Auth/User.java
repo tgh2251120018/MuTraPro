@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.duay.authservice.config.UuidV7GeneratorType;
+import com.duay.authservice.utils.UuidV7GeneratorType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

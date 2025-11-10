@@ -31,6 +31,16 @@ const routes = [
             target: 'http://localhost:3002/requests'
         }
     },
+
+    {
+        prefix: '/user-profile',
+        proxyConfig: {
+            target: 'http://localhost:8080/user-profile',
+            pathRewrite: {
+                '^/': 'public/',
+            }
+        }
+    }
     //     {
     //         // --- Order Service (Example of another simple rule) ---
     //         prefix: '/orders',
