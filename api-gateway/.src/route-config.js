@@ -28,9 +28,9 @@ const routes = [
         // --- Request Service (Simple Rule) ---
         prefix: '/requests',
         proxyConfig: {
-            target: 'http://localhost:3002',
+            target: 'http://localhost:3002/requests',
             pathRewrite: {
-                '^/': 'requests/',
+                '^/': '/',
             }
         }
     },
