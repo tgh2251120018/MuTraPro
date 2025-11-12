@@ -7,8 +7,15 @@ const proxyHeaderMiddleware = (req, res, next) => {
 
     console.log(`\n--- [PROXY HELPER]: Đã gọi cho path: ${req.path} ---`);
 
+    //delete whatever the original request may contain to prevent header injection --duay--
+    delete req.headers['X-User-Id'];
+    delete req.headers['X-User-Role'];
+    delete req.headers['X-Account-Type'];
+    delete req.headers['authorization'];
+
     if (req.user) {
         console.log(`[PROXY HELPER]: ĐÃ TÌM THẤY req.user (ID: ${req.user.id}). Đang gắn headers...`);
+
 
         req.headers['X-User-Id'] = req.user.id;
         req.headers['X-User-Role'] = req.user.role;
