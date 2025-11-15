@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - task-service
+      - file-service
+
+  task-service:
+    build: ./task-assignment-service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/task_management
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongo
+
+  file-service:
+    build: ./music-file-service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/music_file_management
+    ports:
+      - "5002:5002"
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+
+volumes:
+  mongo_data:

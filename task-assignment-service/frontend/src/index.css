@@ -1,0 +1,25 @@
+:root{
+  --bg:#0f1720;
+  --panel:#0b1420;
+  --card:#08202a;
+  --accent:#0ea5a4;
+  --muted:#9aa4ad;
+  --sidebar:#0b1620;
+}
+html,body,#root{height:100%;margin:0;font-family:Inter, Roboto, Arial, sans-serif;background:var(--bg);color:#c9d4da}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--sidebar);padding:24px 12px;box-shadow:inset 0 -1px 0 rgba(255,255,255,0.02)}
+.logo{font-weight:700;margin-bottom:20px;color:#e6f2f2}
+.nav{display:flex;flex-direction:column;gap:12px}
+.nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:6px}
+.nav a:hover{background:rgba(255,255,255,0.02);color:#fff}
+.main{flex:1;padding:20px 28px;overflow:auto}
+.header{font-size:18px;margin-bottom:14px;color:#e6f2f2}
+.board{display:flex;gap:18px;align-items:flex-start}
+.column{flex:1;background:rgba(255,255,255,0.02);border-radius:8px;padding:16px;min-height:60vh;border:1px solid rgba(255,255,255,0.02)}
+.col-title{font-size:14px;color:#cde; margin-bottom:12px}
+.card{background:linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.03)}
+.card h4{margin:0 0 6px 0;font-size:13px;color:#e6f2f2}
+.card p{margin:0;font-size:12px;color:var(--muted)}
+.empty{opacity:0.4;height:200px;border-radius:6px}
+@media (max-width:900px){ .sidebar{display:none} .board{flex-direction:column} }
