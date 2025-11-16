@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(extractUserInfo); // 🔒 nhận thông tin người dùng từ Gateway
 
-mongoose.connect(process.env.MONGO_URI || "mongodb://mongo:27017/music_file_management");
+mongoose.connect(process.env.MONGO_URI || "mongodb://mongo:27017/music_file_management_db");
 
 app.use("/files", fileRoutes);
 
