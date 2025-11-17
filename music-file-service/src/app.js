@@ -2,15 +2,17 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { connectDB } from "./config/db.config.js";
+
 import fileRoutes from "./routes/fileRoutes.js";
 import { extractUserInfo } from "./middleware/authMiddleware.js";
 
 dotenv.config();
+connectDB();
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(extractUserInfo); // 🔒 nhận thông tin người dùng từ Gateway
-
 mongoose.connect(process.env.MONGO_URI || "mongodb://mongo:27017/music_file_management_db");
 
 app.use("/files", fileRoutes);
