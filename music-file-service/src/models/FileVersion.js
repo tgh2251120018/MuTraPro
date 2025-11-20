@@ -7,4 +7,4 @@ const fileVersionSchema = new mongoose.Schema({
   uploader: String,
 }, { timestamps: { createdAt: "created_at" } });
 
-export default mongoose.model("FileVersion", fileVersionSchema);
+export default mongoose.model("FileVersion", fileVersionSchema, "file_version");

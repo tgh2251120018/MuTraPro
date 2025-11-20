@@ -13,4 +13,4 @@ const fileMetadataSchema = new mongoose.Schema({
   checksum: String,
 }, { timestamps: { createdAt: "created_at", updatedAt: "modified_at" } });
 
-export default mongoose.model("FileMetadata", fileMetadataSchema);
+export default mongoose.model("FileMetadata", fileMetadataSchema, "file_metadata");
