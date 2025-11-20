@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  background: #0d1117;
+  font-family: "Inter", sans-serif;
+  color: white;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #0d1117;
+  border-right: 1px solid #1b1f24;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 22px;
+  margin-bottom: 25px;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 10px 0;
+  color: #8b949e;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+  color: white;
+}
+
+/* MAIN AREA */
+.main {
+  flex: 1;
+  padding: 30px;
+}
+
+.title {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+/* UPLOAD BAR */
+.upload-bar {
+  width: 100%;
+  background: #11161c;
+  border: 1px solid #1f2730;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-btn {
+  background: #2d6cdf;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.upload-btn:hover {
+  background: #3c7ef3;
+}
+
+/* FILE GRID */
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.file-card {
+  background: #11161c;
+  border: 1px solid #1f2730;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.file-name {
+  margin-bottom: 10px;
+}
+
+.play-btn {
+  padding: 5px 12px;
+  background: #2d6cdf;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+
+.play-btn:hover {
+  background: #3c7ef3;
+}
+
+.duration {
+  margin-top: 8px;
+  color: #8b949e;
+  font-size: 13px;
+}

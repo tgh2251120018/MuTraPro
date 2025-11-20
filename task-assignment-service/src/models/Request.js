@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
+
 const requestSchema = new mongoose.Schema({
-  request_id: String,
-  request_title: String,
-  issued_by: String,
+  title: { type: String, required: true },
   description: String,
-  progress: { type: String, enum: ["Pending", "Assigned", "In Progress", "Completed"] },
-  issued_to_task: [String],
-  attachment: [String],
-}, { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } });
+  issued_by: String, // tên/email khách hàng
+  status: { type: String, enum: ["Pending", "Assigned", "In Progress", "Completed"], default: "Pending" },
+  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+  attachments: [String], // đường dẫn file upload
+}, { timestamps: true });
 
 export default mongoose.model("Request", requestSchema);

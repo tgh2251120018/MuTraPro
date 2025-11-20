@@ -1,0 +1,11 @@
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background: #0f1624;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  color: white;
+}
