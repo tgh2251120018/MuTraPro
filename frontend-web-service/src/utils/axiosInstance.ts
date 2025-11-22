@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { BASE_URL } from "./apiPaths";
+
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:8080/api/v1', // [INSTRUCTION_B] Fallback to localhost for dev [INSTRUCTION_E]
-    timeout: 10000,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },

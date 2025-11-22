@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; // Removed useContext for simplicity, assuming you handle context separately
 import { Link, useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/layouts/AuthLayout';
-import Input from '../components/Inputs/Input';
-import axiosInstance from '../utils/axiosInstance';
-import { type AuthResponse } from '../types/auth';
+import AuthLayout from '../../components/layouts/AuthLayout';
+import Input from '../../components/Inputs/Input';
+import axiosInstance from '../../utils/axiosInstance';
+import { type AuthResponse } from '../../types/auth';
 import { AxiosError } from 'axios';
 
 // [INSTRUCTION_B] Define API paths constant locally or import from utils [INSTRUCTION_E]

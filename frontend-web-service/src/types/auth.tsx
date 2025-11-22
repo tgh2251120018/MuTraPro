@@ -3,7 +3,7 @@
  */
 export interface User {
     id: string;
-    fullName: string;
+    username: string;
     email: string;
     role: 'user' | 'admin'; // [INSTRUCTION_B] Adjust roles based on your actual backend logic [INSTRUCTION_E]
     profileImageUrl?: string;

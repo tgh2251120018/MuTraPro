@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/layouts/AuthLayout';
-import Input from '../components/Inputs/Input';
-import axiosInstance from '../utils/axiosInstance';
-import { type AuthResponse } from '../types/auth';
+import AuthLayout from '../../components/layouts/AuthLayout';
+import Input from '../../components/Inputs/Input';
+import axiosInstance from '../../utils/axiosInstance';
+import { type AuthResponse } from '../../types/auth';
 import { AxiosError } from 'axios';
 // [INSTRUCTION_B] Import helper functions. Ensure simple implementation for validateEmail exists [INSTRUCTION_E]
-import { validateEmail } from '../utils/helper';
+import { validateEmail } from '../../utils/helper';
 
-const API_PATHS = {
-    AUTH: { REGISTER: '/auth/register' }
-};
+import { API_PATHS } from '../../utils/apiPaths';
+
 
 const SignUp: React.FC = () => {
     // State definitions with Types
     const [profilePic, setProfilePic] = useState<File | null>(null);
-    const [fullName, setFullName] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [adminInviteToken, setAdminInviteToken] = useState<string>('');
+    //    const [adminInviteToken, setAdminInviteToken] = useState<string>('');
 
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,7 +28,8 @@ const SignUp: React.FC = () => {
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!fullName) {
+        // --- Validate Inputs (Giữ nguyên) ---
+        if (!username) {
             setError('Please enter full name.');
             return;
         }
@@ -46,42 +46,37 @@ const SignUp: React.FC = () => {
         setIsLoading(true);
 
         try {
-            let profileImageUrl = '';
+            const profileImageUrl = '';
 
-            // [INSTRUCTION_B] Logic for Image Upload. Assuming uploadImage returns { imageUrl: string } [INSTRUCTION_E]
+            // --- Image Upload Logic (Giữ nguyên nếu có) ---
             if (profilePic) {
                 // const imgUploadRes = await uploadImage(profilePic); 
                 // profileImageUrl = imgUploadRes.imageUrl || "";
-                // Placeholder:
-                console.log("Uploading image:", profilePic.name);
             }
 
-            // API Call
+            // [INSTRUCTION_B] Change: Check for status 201 instead of auto-login [INSTRUCTION_E]
             const response = await axiosInstance.post<AuthResponse>(API_PATHS.AUTH.REGISTER, {
-                name: fullName,
+                username,
                 email,
                 password,
-                adminInviteToken,
-                profileImageUrl, // Include the image URL in the payload
+                //adminInviteToken,
+                //profileImageUrl,
             });
 
-            const { token, user } = response.data;
-
-            if (token) {
-                localStorage.setItem('token', token);
-                // updateUser(user);
-
-                if (user.role === 'admin') {
-                    navigate('/admin/dashboard');
-                } else {
-                    navigate('/user/dashboard');
-                }
+            // Kiểm tra nếu tạo thành công (201 Created)
+            if (response.status === 201) {
+                // Không lưu token, không update context
+                // Có thể thêm thông báo thành công tại đây (ví dụ: Toast notification)
+                alert("Registration successful! Please login."); // Tạm thời dùng alert để báo hiệu
+                navigate('/login');
             }
+
         } catch (err) {
             const axiosError = err as AxiosError<{ message: string }>;
             if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
                 setError(axiosError.response.data.message);
             } else {
+                // Fallback error message
                 setError('Something went wrong. Please try again.');
             }
         } finally {
@@ -111,8 +106,8 @@ const SignUp: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             label="Full Name"
                             placeholder="John Doe"
                         />
@@ -132,13 +127,13 @@ const SignUp: React.FC = () => {
                             type="password"
                         />
 
-                        <Input
+                        {/* <Input
                             value={adminInviteToken}
                             onChange={(e) => setAdminInviteToken(e.target.value)}
                             label='Admin Invite Token'
                             placeholder='Optional'
                             type='text'
-                        />
+                        /> */}
                     </div>
 
                     {error && <p className="text-red-500 text-xs pb-2.5 mt-2">{error}</p>}

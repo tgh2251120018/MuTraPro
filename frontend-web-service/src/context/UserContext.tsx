@@ -36,7 +36,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, updateUser, isAuthenticated: !!user }}>
+        <UserContext.Provider value={{ user, updateUser, isAuthenticated: !!user }
+        }>
             {children}
         </UserContext.Provider>
     );
