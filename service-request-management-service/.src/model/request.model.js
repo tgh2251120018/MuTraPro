@@ -72,7 +72,7 @@ const requestSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true,
+        timestamps: { createdAt: "created_at", updatedAt: "update_at" },
         _id: false,
     }
 );

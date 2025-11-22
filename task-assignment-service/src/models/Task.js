@@ -2,14 +2,19 @@ import mongoose from "mongoose";
 
 
 const taskSchema = new mongoose.Schema({
-  request: { type: mongoose.Schema.Types.ObjectId, ref: "Request" },
-  name: { type: String, required: true },
+  _id: {
+    type: 'UUID',
+    default: () => uuidv7(),
+    required: true
+  },
+  from_request: { type: 'UUID' },
+  task_name: { type: String, required: true },
   description: String,
-  assigned_to: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  role: { type: String, enum: ["Transcription Specialist", "Arrangement Specialist", "Recording Artist"] },
-  status: { type: String, enum: ["Not Started", "In Progress", "Completed"], default: "Not Started" },
+  issued_by: { type: 'UUID' },
+  assigned_to: [{ type: 'UUID' }],
+  progress: { type: String, enum: ["Not Started", "In Progress", "Completed"] },
   deadline: Date,
-  result_files: [String], // đường dẫn file kết quả
+  result_files: [String], // map to file object
   progress_note: String,
 }, { timestamps: true });
 
