@@ -1,19 +1,23 @@
-/**
- * Interface representing the User model based on your backend response.
- */
-export interface User {
-    id: string;
-    username: string;
-    email: string;
-    role: 'user' | 'admin'; // [INSTRUCTION_B] Adjust roles based on your actual backend logic [INSTRUCTION_E]
-    profileImageUrl?: string;
+// 1. Cấu trúc dữ liệu bên trong Token (Payload)
+export interface JwtPayload {
+    sub: string;          // User ID (UUID)
+    role: string;         // e.g., "CUSTOMER"
+    account_type: string; // e.g., "USER"
+    iat: number;          // Issued At
+    exp: number;          // Expiration Time
 }
 
-/**
- * Interface for the Auth API response (Login/Register).
- */
-export interface AuthResponse {
-    token: string;
-    user: User;
-    message?: string;
+// 2. Cấu trúc User trong ứng dụng Frontend (Map từ Payload sang)
+export interface User {
+    id: string;
+    role: string;
+    accountType: string;
+    // Các thông tin khác như email/name chưa có trong token, 
+    // tạm thời ta dùng thông tin từ token trước.
+}
+
+// 3. Cấu trúc Response trả về từ API Login
+export interface LoginResponse {
+    access_token: string;
+    refresh_token: string;
 }

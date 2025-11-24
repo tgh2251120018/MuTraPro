@@ -1,24 +1,24 @@
-import React, { useState } from 'react'; // Removed useContext for simplicity, assuming you handle context separately
+import React, { useContext, useState } from 'react'; // Removed useContext for simplicity, assuming you handle context separately
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import Input from '../../components/Inputs/Input';
 import axiosInstance from '../../utils/axiosInstance';
-import { type AuthResponse } from '../../types/auth';
+import { getUserFromToken } from '../../utils/authUtils';
+import { type LoginResponse, type User } from '../../types/auth';
 import { AxiosError } from 'axios';
 
 // [INSTRUCTION_B] Define API paths constant locally or import from utils [INSTRUCTION_E]
-const API_PATHS = {
-    AUTH: { LOGIN: '/auth/login' }
-};
+import { API_PATHS } from '../../utils/apiPaths';
+import { UserContext } from '../../context/UserContext';
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
-    // const { updateUser } = useContext(UserContext); // Uncomment when Context is ready
+    const { updateUser } = useContext(UserContext); // Uncomment when Context is ready
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,24 +32,33 @@ const Login: React.FC = () => {
         setIsLoading(true);
 
         try {
-            // [INSTRUCTION_B] API Call with typed response [INSTRUCTION_E]
-            const response = await axiosInstance.post<AuthResponse>(API_PATHS.AUTH.LOGIN, {
-                email,
+
+            const response = await axiosInstance.post<LoginResponse>(API_PATHS.AUTH.LOGIN, {
+                username,
                 password,
             });
 
-            const { token, user } = response.data;
+            const { access_token, refresh_token } = response.data;
 
-            if (token) {
-                localStorage.setItem('token', token);
-                // updateUser(user); // Update context
+            if (access_token) {
 
-                // Redirect based on role
-                if (user.role === 'admin') {
-                    navigate('/admin/dashboard');
-                } else {
-                    navigate('/user/dashboard');
+                localStorage.setItem('access_token', access_token);
+                localStorage.setItem('refresh_token', refresh_token);
+
+                const userData = getUserFromToken(access_token);
+
+
+                if (userData) {
+                    updateUser(userData);
+                    console.log(userData);
+                    if (userData.role === 'ADMIN') {
+                        navigate('/admin/dashboard');
+                    } else {
+                        navigate('/user/dashboard');
+                    }
                 }
+            } else {
+                setError('Token invalid.');
             }
         } catch (err) {
             const axiosError = err as AxiosError<{ message: string }>;
@@ -73,10 +82,10 @@ const Login: React.FC = () => {
 
                 <form onSubmit={handleLogin} className="flex flex-col gap-2">
                     <Input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        label="Email Address"
-                        placeholder="example@gmail.com"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        label="Username"
+                        placeholder="Username"
                         type="text"
                     />
 
@@ -111,3 +120,7 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+function updateUser(userData: User) {
+    throw new Error('Function not implemented.');
+}
