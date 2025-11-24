@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # 1. Database MongoDB
+  mongo:
+    image: mongo:latest
+    container_name: mutrapro_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db # Để dữ liệu không bị mất khi tắt Docker
+
+  # 2. Backend (Notification Service)
+  backend:
+    build: ./notification-service
+    container_name: mutrapro_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      # Quan trọng: Trong Docker, host không phải là localhost mà là tên service "mongo"
+      - MONGO_URI=mongodb://mongo:27017/mutrapro_notification
+      - RABBITMQ_URL=amqp://rabbitmq # (Dự phòng nếu sau này cài RabbitMQ)
+    depends_on:
+      - mongo # Đợi mongo chạy xong mới chạy backend
+
+  # 3. Frontend (React)
+  frontend:
+    build: ./frontend
+    container_name: mutrapro_frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true # Fix lỗi thoát ngay lập tức của React trong Docker
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Để sửa code trên Win/Mac nó tự cập nhật
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

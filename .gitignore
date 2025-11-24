@@ -1,0 +1,35 @@
+# --- Dependencies (Thư viện tải về - KHÔNG ĐƯỢC UP) ---
+node_modules/
+package-lock.json # (Tùy chọn: Thường thì nên giữ, nhưng nếu gây xung đột thì ignore)
+yarn.lock
+
+# --- Environment Variables (Mật khẩu - TUYỆT ĐỐI KHÔNG UP) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Build Outputs (File sau khi build xong) ---
+build/
+dist/
+coverage/
+
+# --- Logs (File báo lỗi rác) ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+npm-debug.log
+
+# --- OS / IDE Files (File rác của hệ điều hành và trình soạn thảo) ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Docker (Nếu không muốn up dữ liệu database ảo lên) ---
+mongo_data/
