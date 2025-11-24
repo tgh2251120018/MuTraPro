@@ -1,4 +1,4 @@
-﻿services:
+services:
   mongo:
     image: mongo:6.0
     container_name: mutrapro-mongo
