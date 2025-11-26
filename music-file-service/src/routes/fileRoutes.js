@@ -2,7 +2,7 @@ import express from "express";
 import FileMetadata from "../models/FileMetadata.js";
 import FileVersion from "../models/FileVersion.js";
 import { upload } from "../utils/upload.js";
-import { v4 as uuidv4 } from "uuid";
+import { v7 as uuidv7 } from "uuid";
 
 const router = express.Router();
 
@@ -51,73 +51,116 @@ function getChecksum(filePath) {
   });
 }
 
-router.post("/upload", upload.single("file"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+const axios = require('axios');
 
-  // Kiểm tra định dạng file
-  if (!ALLOWED_MIME.includes(req.file.mimetype)) {
+router.post("/upload/initiate", async (req, res) => {
+  const { fileName, fileType, requestId, taskId } = req.body;
+  const userId = req.user?.id || "unknown";
+
+  if (!ALLOWED_MIME.includes(fileType)) {
     return res.status(400).json({ message: "Định dạng file không hợp lệ" });
   }
 
-  const userId = req.user?.id || "unknown";
-  const { requestId, taskId } = req.body;
+  const uniqueId = uuidv7();
 
-  // Tính checksum
-  let checksum = "";
+  const fileExtension = path.extname(fileName);
+
+  const category = "audio-evidence";
+  const safeFileName = `${uniqueId}${fileExtension}`;
+
+
+  const objectPath = `${category}/${requestId || 'general'}/${safeFileName}`;
+
   try {
-    checksum = await getChecksum(req.file.path);
-  } catch (e) {
-    return res.status(500).json({ message: "Lỗi tính checksum" });
-  }
-
-  // Kiểm tra file đã tồn tại (theo tên, requestId, taskId)
-  let existing = await FileMetadata.findOne({
-    file_name: req.file.originalname,
-    linked_to_request: requestId || null,
-    linked_to_task: taskId || null
-  });
-
-  let fileMeta, versionNum = 1;
-  if (existing) {
-    // Tạo phiên bản mới
-    versionNum = existing.version + 1;
-    await FileVersion.create({
-      parent_file_id: existing.file_id,
-      version_number: versionNum,
-      url: `/uploads/${req.file.filename}`,
-      uploader: userId
+    const storageResponse = await axios.post('http://storage-service:3000/internal/presigned-upload', {
+      filename: objectPath
     });
-    // Cập nhật metadata bản mới nhất
-    existing.url = `/uploads/${req.file.filename}`;
-    existing.size_in_mb = (req.file.size / (1024 * 1024)).toFixed(2);
-    existing.file_type = req.file.mimetype;
-    existing.uploader = userId;
-    existing.version = versionNum;
-    existing.checksum = checksum;
-    existing.linked_to_request = requestId || null;
-    existing.linked_to_task = taskId || null;
-    await existing.save();
-    fileMeta = existing;
-  } else {
-    // Tạo metadata mới
-    fileMeta = new FileMetadata({
-      file_id: uuidv4(),
-      file_name: req.file.originalname,
-      file_type: req.file.mimetype,
-      size_in_mb: (req.file.size / (1024 * 1024)).toFixed(2),
+
+    const { uploadUrl } = storageResponse.data;
+
+
+    const pendingFile = new FileMetadata({
+      file_id: uniqueId,
+      file_name: fileName,
+      file_type: fileType,
       uploader: userId,
       version: 1,
-      url: `/uploads/${req.file.filename}`,
-      checksum,
+      url: objectPath,
+      status: 'PENDING',
       linked_to_request: requestId || null,
       linked_to_task: taskId || null
     });
-    await fileMeta.save();
-  }
 
-  res.status(201).json(fileMeta);
+    await pendingFile.save();
+
+    res.json({
+      uploadUrl,
+      fileId: pendingFile.file_id,
+      objectPath
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Lỗi khởi tạo upload" });
+  }
 });
 
+router.post("/upload/complete", async (req, res) => {
+  const { fileId, clientChecksum, sizeInBytes } = req.body;
+  const userId = req.user?.id || "unknown";
+
+  try {
+    const incomingFile = await FileMetadata.findOne({ file_id: fileId, status: 'PENDING' });
+    if (!incomingFile) {
+      return res.status(404).json({ message: "Không tìm thấy phiên upload hoặc đã hoàn thành" });
+    }
+    let existing = await FileMetadata.findOne({
+      file_name: incomingFile.file_name,
+      linked_to_request: incomingFile.linked_to_request,
+      linked_to_task: incomingFile.linked_to_task,
+      status: 'ACTIVE'
+    });
+
+    if (existing) {
+
+      await FileVersion.create({
+        parent_file_id: existing.file_id,
+        version_number: existing.version,
+        url: existing.url,
+        uploader: existing.uploader,
+        created_at: existing.updated_at
+      });
+
+      existing.url = incomingFile.url; // MinIO path
+      existing.size_in_mb = (sizeInBytes / (1024 * 1024)).toFixed(2);
+      existing.file_type = incomingFile.file_type;
+      existing.uploader = userId;
+      existing.version = existing.version + 1;
+      existing.checksum = clientChecksum || "N/A";
+      existing.updated_at = new Date();
+
+      await existing.save();
+
+
+      await FileMetadata.deleteOne({ _id: incomingFile._id });
+
+      return res.status(200).json(existing);
+
+    } else {
+      // --- NEW FILE LOGIC ---
+      incomingFile.status = 'ACTIVE'; // Activate the record
+      incomingFile.size_in_mb = (sizeInBytes / (1024 * 1024)).toFixed(2);
+      incomingFile.checksum = clientChecksum || "N/A";
+      await incomingFile.save();
+
+      return res.status(200).json(incomingFile);
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Lỗi hoàn tất upload" });
+  }
+});
 
 /**
  * GET /files/versions/:parent_id
@@ -134,29 +177,56 @@ import fs from "fs";
 import path from "path";
 
 // API download file an toàn
+const axios = require('axios'); // Đảm bảo đã cài axios
+
+// API download file an toàn (Phiên bản MinIO)
 router.get("/download/:file_id", async (req, res) => {
   const userId = req.user?.id;
   const file_id = req.params.file_id;
   const version = req.query.version ? parseInt(req.query.version) : null;
 
-  let fileMeta = await FileMetadata.findOne({ file_id });
-  if (!fileMeta) return res.status(404).json({ message: "File not found" });
+  try {
+    // 1. Tìm Metadata trong DB
+    let fileMeta = await FileMetadata.findOne({ file_id });
+    if (!fileMeta) return res.status(404).json({ message: "File not found" });
 
-  // TODO: kiểm tra quyền truy cập nếu cần (ở đây chỉ kiểm tra tồn tại userId)
-  if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    // 2. Kiểm tra quyền (Authorization)
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-  let fileUrl = fileMeta.url;
-  if (version && version !== fileMeta.version) {
-    // Lấy url từ FileVersion nếu cần bản cũ
-    const ver = await FileVersion.findOne({ parent_file_id: file_id, version_number: version });
-    if (!ver) return res.status(404).json({ message: "Version not found" });
-    fileUrl = ver.url;
+    // 3. Xác định đường dẫn file trên MinIO (Object Path)
+    // Mặc định lấy bản hiện tại
+    let objectPath = fileMeta.url;
+
+    // Nếu user đòi bản cũ (Versioning)
+    if (version && version !== fileMeta.version) {
+      const ver = await FileVersion.findOne({ parent_file_id: file_id, version_number: version });
+      if (!ver) return res.status(404).json({ message: "Version not found" });
+      objectPath = ver.url;
+    }
+
+    // 4. [INSTRUCTION_B] Call Storage Service to get the signed URL
+    // We pass 'filenameOverride' so the browser sees "Báo cáo.pdf" instead of "UUIDv7.pdf"
+    // [INSTRUCTION_E]
+    const storageResponse = await axios.post('http://storage-service:3000/internal/presigned-download', {
+      objectName: objectPath,           // Ví dụ: audio/REQ-1/018e...mp3
+      filenameOverride: fileMeta.file_name // Ví dụ: Ca khúc nhạc trẻ.mp3
+    });
+
+    const { downloadUrl } = storageResponse.data;
+
+    // 5. Điều hướng người dùng
+    // Cách 1 (Khuyên dùng): Redirect trình duyệt tải ngay lập tức
+    // Trình duyệt sẽ nhận 302 và tự động tải file từ MinIO về
+    res.redirect(downloadUrl);
+
+    // Cách 2 (Nếu Client là SPA/Mobile App cần lấy link):
+    // res.json({ downloadUrl });
+
+  } catch (error) {
+    console.error("Download Error:", error.message);
+    // Xử lý lỗi nếu Storage Service bị die hoặc lỗi mạng
+    res.status(500).json({ message: "Không thể tạo đường dẫn tải file lúc này." });
   }
-
-  const filePath = path.join(process.cwd(), fileUrl.replace(/^\//, ""));
-  if (!fs.existsSync(filePath)) return res.status(404).json({ message: "File not found on disk" });
-
-  res.download(filePath, fileMeta.file_name);
 });
 
 export default router;

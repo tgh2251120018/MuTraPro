@@ -1,34 +1,26 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthLayout from '../../components/layouts/AuthLayout';
 import Input from '../../components/Inputs/Input';
 import axiosInstance from '../../utils/axiosInstance';
 import { type AuthResponse } from '../../types/auth';
 import { AxiosError } from 'axios';
-// [INSTRUCTION_B] Import helper functions. Ensure simple implementation for validateEmail exists [INSTRUCTION_E]
 import { validateEmail } from '../../utils/helper';
-
 import { API_PATHS } from '../../utils/apiPaths';
 
-
 const SignUp: React.FC = () => {
-    // State definitions with Types
     const [profilePic, setProfilePic] = useState<File | null>(null);
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    //    const [adminInviteToken, setAdminInviteToken] = useState<string>('');
 
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
-    // const { updateUser } = useContext(UserContext);
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // --- Validate Inputs (Giữ nguyên) ---
         if (!username) {
             setError('Please enter full name.');
             return;
@@ -48,26 +40,19 @@ const SignUp: React.FC = () => {
         try {
             const profileImageUrl = '';
 
-            // --- Image Upload Logic (Giữ nguyên nếu có) ---
             if (profilePic) {
-                // const imgUploadRes = await uploadImage(profilePic); 
-                // profileImageUrl = imgUploadRes.imageUrl || "";
+                //
+
             }
 
-            // [INSTRUCTION_B] Change: Check for status 201 instead of auto-login [INSTRUCTION_E]
             const response = await axiosInstance.post<AuthResponse>(API_PATHS.AUTH.REGISTER, {
                 username,
                 email,
                 password,
-                //adminInviteToken,
-                //profileImageUrl,
             });
 
-            // Kiểm tra nếu tạo thành công (201 Created)
             if (response.status === 201) {
-                // Không lưu token, không update context
-                // Có thể thêm thông báo thành công tại đây (ví dụ: Toast notification)
-                alert("Registration successful! Please login."); // Tạm thời dùng alert để báo hiệu
+                alert("Registration successful! Please login.");
                 navigate('/login');
             }
 
@@ -76,7 +61,6 @@ const SignUp: React.FC = () => {
             if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
                 setError(axiosError.response.data.message);
             } else {
-                // Fallback error message
                 setError('Something went wrong. Please try again.');
             }
         } finally {
@@ -85,76 +69,67 @@ const SignUp: React.FC = () => {
     };
 
     return (
-        <AuthLayout>
-            <div className="w-full h-auto flex flex-col justify-center">
-                <h3 className="text-2xl font-semibold text-black">Create an Account</h3>
-                <p className="text-sm text-slate-500 mt-1 mb-6">
-                    Join us today by entering your details below.
-                </p>
+        <div>
+            <h3 className="text-center mb-3" style={{ fontSize: '24px', fontWeight: 'bold' }}>Create an Account</h3>
+            <p className="text-center mb-4" style={{ color: '#6b7280', fontSize: '14px' }}>
+                Join us today by entering your details below.
+            </p>
 
-                <form onSubmit={handleSignUp}>
-                    {/* [INSTRUCTION_B] Simple File Input for Profile Pic (Replacment for ProfilePhotoSelector) [INSTRUCTION_E] */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
+            <form onSubmit={handleSignUp}>
+                <div className="input-group">
+                    <label className="input-label">Profile Photo</label>
+                    <div className="input-wrapper" style={{ padding: '6px 16px' }}>
                         <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => setProfilePic(e.target.files ? e.target.files[0] : null)}
-                            className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            className="input-control"
+                            style={{ padding: '6px 0' }}
                         />
                     </div>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            label="Full Name"
-                            placeholder="John Doe"
-                        />
+                <Input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    label="Full Name"
+                    placeholder="John Doe"
+                />
 
-                        <Input
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            label="Email Address"
-                            placeholder="example@gmail.com"
-                        />
+                <Input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    label="Email Address"
+                    placeholder="example@gmail.com"
+                />
 
-                        <Input
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            label="Password"
-                            placeholder="Min 8 characters"
-                            type="password"
-                        />
+                <Input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    label="Password"
+                    placeholder="Min 8 characters"
+                    type="password"
+                />
 
-                        {/* <Input
-                            value={adminInviteToken}
-                            onChange={(e) => setAdminInviteToken(e.target.value)}
-                            label='Admin Invite Token'
-                            placeholder='Optional'
-                            type='text'
-                        /> */}
-                    </div>
+                {error && <p className="text-danger text-center mt-3">{error}</p>}
 
-                    {error && <p className="text-red-500 text-xs pb-2.5 mt-2">{error}</p>}
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="btn btn-primary"
+                    style={{ width: '100%', marginTop: '16px' }}
+                >
+                    {isLoading ? 'CREATING ACCOUNT...' : 'SIGN UP'}
+                </button>
 
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="btn-primary w-full py-3 mt-6 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors disabled:opacity-70"
-                    >
-                        {isLoading ? 'CREATING ACCOUNT...' : 'SIGN UP'}
-                    </button>
-
-                    <p className="text-sm text-slate-800 mt-4 text-center">
-                        Already have an account?{' '}
-                        <Link className="text-blue-600 font-medium underline hover:text-blue-700" to="/login">
-                            Login
-                        </Link>
-                    </p>
-                </form>
-            </div>
-        </AuthLayout>
+                <p className="text-center mt-3" style={{ fontSize: '13px' }}>
+                    Already have an account?{' '}
+                    <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: 600, textDecoration: 'none' }}>
+                        Login
+                    </Link>
+                </p>
+            </form>
+        </div>
     );
 };
 

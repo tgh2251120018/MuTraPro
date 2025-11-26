@@ -1,6 +1,5 @@
 package com.duay.authservice.exception;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,6 +29,24 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * Handles HttpMessageNotReadableException. Triggered when the request body
+     * is missing, or the JSON is malformed/cannot be parsed. Returns HTTP 400
+     * Bad Request.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+        logger.warn("Malformed JSON request or missing body: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Required request body is missing or unreadable.",
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * Handles BadCredentialsException. This is triggered for authentication
@@ -59,10 +77,6 @@ public class GlobalExceptionHandler {
                 "Validation failed. Please check your input data.",
                 request.getDescription(false).replace("uri=", "")
         );
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
-        errorResponse.setValidationErrors(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

@@ -12,7 +12,7 @@ const requestRoutes = require('./routes/request.routes');
 const app = express();
 
 // Define PORT
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT;
 
 // --- Middlewares ---
 // Enable Cross-Origin Resource Sharing
