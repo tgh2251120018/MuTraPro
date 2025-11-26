@@ -5,4 +5,7 @@ export const API_PATHS = {
         LOGIN: "/auth/login",
         REGISTER: "/auth/register"
     },
+    USER: {
+        GET_PROFILE: (userId: string) => `/user-profile/${userId}`,
+    }
 }

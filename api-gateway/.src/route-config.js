@@ -43,6 +43,12 @@ const routes = [
                 '^/': 'public/',
             }
         }
+    },
+    {
+        prefix: '/files',
+        proxyConfig: {
+            target: 'http://localhost:3003/files'
+        }
     }
     //     {
     //         // --- Order Service (Example of another simple rule) ---

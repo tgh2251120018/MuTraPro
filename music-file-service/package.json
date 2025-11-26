@@ -8,17 +8,18 @@
     "dev": "nodemon --watch src src/app.js",
     "test": "echo \"No tests yet\" && exit 0"
   },
-  "keywords": ["music-file", "mutrapro"],
+  "keywords": [
+    "music-file",
+    "mutrapro"
+  ],
   "author": "MuTraPro",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
+    "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "mongoose": "^8.19.3",
-    "multer": "1.4.5-lts.1",
-    "gridfs-stream": "^1.1.1",
     "mongodb": "^6.6.1",
+    "mongoose": "^8.19.3",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

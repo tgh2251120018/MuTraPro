@@ -1,23 +1,30 @@
 .dashboard-container {
     display: flex;
-    height: 100%;
+    flex: 1;
     /* Chiếm hết chiều cao còn lại của RootLayout */
     width: 100%;
     overflow: hidden;
     /* Ngăn cuộn ở container ngoài */
+    background-color: var(--bg-app);
+    /* Đảm bảo nền đồng bộ */
+    position: relative;
+
+
 }
 
 /* Sidebar (Cabinet Drawer) */
 .sidebar {
     background-color: var(--bg-card);
+
+    /* Đảm bảo sidebar luôn cao 100% chiều cao của cha nó (dashboard-container) */
     height: 100%;
+    min-height: 100%;
+
     border-right: 1px solid var(--border-color);
     box-shadow: var(--shadow-effect);
-    /* Hiệu ứng bóng/phát sáng theo theme */
     display: flex;
     flex-direction: column;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Animation mượt */
     z-index: 50;
     position: relative;
 }
