@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const cors = require('cors');
 const routes = require('./route-config');
 const authMiddleware = require('./authMiddleware');
 const { proxyHeaderMiddleware } = require('./proxy-helper');
@@ -9,7 +10,7 @@ const { proxyHeaderMiddleware } = require('./proxy-helper');
 const app = express();
 const PORT = process.env.PORT_API_GATEWAY;
 
-const whitelist = ['http://localhost:5173']
+const whitelist = process.env.WHITELIST_ORIGIN;
 
 const corsOptions = {
     origin: function (origin, callback) {
@@ -43,7 +44,8 @@ app.get("/lmao", (req, res) => {
     res.send(lmao);
 });
 
-routes.forEach(route => {
+routes?.forEach(route => {
+
     const combinedOptions = {
         changeOrigin: true,
         ...route.proxyConfig

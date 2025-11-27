@@ -1,6 +1,5 @@
 package com.duay.authservice.exception;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,10 +77,6 @@ public class GlobalExceptionHandler {
                 "Validation failed. Please check your input data.",
                 request.getDescription(false).replace("uri=", "")
         );
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
-        errorResponse.setValidationErrors(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

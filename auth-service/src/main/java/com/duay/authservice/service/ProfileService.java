@@ -31,9 +31,12 @@ public class ProfileService {
     public UserProfileResponse getUserProfileByID(UUID userID) {
         var userProfile = userProfileRepository.findById(userID)
                 .orElseThrow(() -> new ResourceNotFoundException("UserProfile not found for user"));
+        var user = userProfile.getUser();
         return UserProfileResponse.builder()
                 .displayName(userProfile.getUserDisplayName())
+                .username(user.getUsername())
                 .role(userProfile.getRole().toString())
+                .avatarURL("")
                 .build();
     }
 }

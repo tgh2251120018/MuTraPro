@@ -2,31 +2,39 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
+import DashboardHome from './pages/dashboard/DashboardHome'; // Import trang mới
+import AuthLayout from './components/layouts/AuthLayout';
+import RootLayout from './components/layouts/RootLayout';
+import MainLayout from './components/layouts/MainLayout';
 import { UserProvider } from './context/UserContext';
-import UserDashboard from './pages/dashboard';
-
-// [INSTRUCTION_B] Placeholder Components for Dashboards (Replace with real pages later) [INSTRUCTION_E]
-//const UserDashboard = () => <div className="p-10 text-2xl font-bold text-blue-600">User Dashboard - Welcome!</div>;
-const AdminDashboard = () => <div className="p-10 text-2xl font-bold text-red-600">Admin Dashboard - System Overview</div>;
+import NotFound from './pages/NotFound';
 
 const App: React.FC = () => {
   return (
     <UserProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route element={<RootLayout />}>
 
-          {/* Protected Routes placeholders */}
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+            </Route>
 
-          {/* Default Redirect: Go to login if path is root */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* ĐÂY LÀ CHỖ ÁP DỤNG LAYOUT VÀ DASHBOARD */}
+            <Route element={<MainLayout />}>
+              {/* Khi vào /dashboard, nó sẽ được bọc bởi MainLayout (có Sidebar) */}
+              <Route path="/dashboard" element={<DashboardHome />} />
 
-          {/* Catch all: Redirect to login for unknown routes */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+              {/* Giữ lại các route cũ nhưng trỏ về cùng 1 DashboardHome cho thống nhất */}
+              <Route path="/user/dashboard" element={<DashboardHome />} />
+              <Route path="/admin/dashboard" element={<DashboardHome />} />
+            </Route>
+
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<NotFound />} />
+
+          </Route>
         </Routes>
       </Router>
     </UserProvider>
