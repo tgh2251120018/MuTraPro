@@ -9,7 +9,7 @@ const { proxyHeaderMiddleware } = require('./proxy-helper');
 const app = express();
 const PORT = process.env.PORT_API_GATEWAY;
 
-const whitelist = ['http://localhost:5173']
+const whitelist = process.env.WHITELIST_ORIGIN;
 
 const corsOptions = {
     origin: function (origin, callback) {

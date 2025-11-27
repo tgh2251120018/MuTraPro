@@ -16,6 +16,9 @@ export const getUserFromToken = (token: string): User | null => {
             id: decoded.sub,
             role: decoded.role,
             accountType: decoded.account_type,
+            fullName: '',
+            email: '',
+            username: '',
         };
     } catch (error) {
         console.error("Invalid token:", error);

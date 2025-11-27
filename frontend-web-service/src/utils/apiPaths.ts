@@ -7,5 +7,9 @@ export const API_PATHS = {
     },
     USER: {
         GET_PROFILE: (userId: string) => `/user-profile/${userId}`,
+    },
+    REQUESTS: {
+        CREATE: '/requests/',
+        GET_ALL: '/requests/', // GET request trả về danh sách
     }
 }

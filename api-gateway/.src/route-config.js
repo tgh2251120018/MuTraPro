@@ -17,10 +17,10 @@ const routes = [
                 '^/change-password': '/private/change-password',
 
                 // Gateway: /auth/login -> Service: /public/login
-                '^/login': 'public/login',
+                '^/login': '/public/login',
 
                 // Gateway: /auth/register -> Service: /public/register
-                '^/register': 'public/register',
+                '^/register': '/public/register',
             }
         }
     },

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
 import axiosInstance from '../../utils/axiosInstance';
-import { type AuthResponse } from '../../types/auth';
+import { type RegisterResponse } from '../../types/auth';
 import { AxiosError } from 'axios';
 import { validateEmail } from '../../utils/helper';
 import { API_PATHS } from '../../utils/apiPaths';
@@ -38,14 +38,14 @@ const SignUp: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const profileImageUrl = '';
+            //const profileImageUrl = '';
 
             if (profilePic) {
                 //
 
             }
 
-            const response = await axiosInstance.post<AuthResponse>(API_PATHS.AUTH.REGISTER, {
+            const response = await axiosInstance.post<RegisterResponse>(API_PATHS.AUTH.REGISTER, {
                 username,
                 email,
                 password,

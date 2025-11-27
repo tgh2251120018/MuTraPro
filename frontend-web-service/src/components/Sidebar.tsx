@@ -1,31 +1,44 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserContext';
-import { FaChevronLeft, FaChevronRight, FaListCheck, FaChartPie } from 'react-icons/fa6';
-import { NavLink } from 'react-router-dom'; // Import NavLink
+import { FaChevronLeft, FaChevronRight, FaUser, FaListCheck, FaChartPie, FaRightFromBracket } from 'react-icons/fa6'; // Import icon Logout
+import { NavLink, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Sidebar: React.FC = () => {
-    const { user } = useContext(UserContext);
+    const { user, logout } = useContext(UserContext); // Lấy hàm logout từ Context
     const [isExpanded, setIsExpanded] = useState(true);
+    const navigate = useNavigate();
 
+    // --- LOGIC HIỂN THỊ INFO ---
     const displayName = user?.fullName || "Guest User";
     const rawUsername = user?.username || (user?.email ? user.email.split('@')[0] : "unknown");
     const displayUsername = rawUsername.startsWith('@') ? rawUsername : `@${rawUsername}`;
     const role = user?.role || "GUEST";
     const avatarSrc = user?.profileImageUrl ? user.profileImageUrl : "/default_avatar.png";
 
-    // Style chung cho Nav Item để tái sử dụng
+    // --- LOGIC LOGOUT ---
+    const handleLogout = () => {
+        const confirm = window.confirm("Are you sure you want to logout?");
+        if (confirm) {
+            logout(); // Xóa token & state
+            navigate('/login'); // Chuyển về trang đăng nhập
+        }
+    };
+
+    // Style chung cho Nav Item
     const navItemStyle = ({ isActive }: { isActive: boolean }) => ({
         padding: '10px',
         color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)',
-        backgroundColor: isActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent', // Highlight khi Active
+        backgroundColor: isActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent',
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
         cursor: 'pointer',
         borderRadius: '8px',
         justifyContent: isExpanded ? 'flex-start' : 'center',
-        textDecoration: 'none', // Xóa gạch chân của thẻ a
-        transition: 'all 0.2s ease'
+        textDecoration: 'none',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap' as const, // Ngăn text bị xuống dòng khi thu nhỏ
+        overflow: 'hidden'
     });
 
     return (
@@ -38,6 +51,7 @@ const Sidebar: React.FC = () => {
                 {isExpanded ? <FaChevronLeft size={12} /> : <FaChevronRight size={12} />}
             </button>
 
+            {/* --- USER INFO --- */}
             <div className="sidebar-header">
                 <div className="user-avatar">
                     <img
@@ -59,22 +73,52 @@ const Sidebar: React.FC = () => {
                 </div>
             </div>
 
+            {/* --- MENU ITEMS --- */}
             <nav className="sidebar-nav">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
-                    {/* NavLink Dashboard */}
-                    <NavLink to="/dashboard" style={navItemStyle}>
-                        <FaChartPie size={20} />
+                    <NavLink to="/dashboard" style={navItemStyle} title="Dashboard">
+                        <FaChartPie size={20} style={{ minWidth: '20px' }} />
                         {isExpanded && <span style={{ fontSize: '14px', fontWeight: 500 }}>Dashboard</span>}
                     </NavLink>
 
-                    {/* NavLink My Tasks (Placeholder) */}
-                    <NavLink to="/tasks" style={navItemStyle}>
-                        <FaListCheck size={20} />
+                    <NavLink to="/tasks" style={navItemStyle} title="My Tasks">
+                        <FaListCheck size={20} style={{ minWidth: '20px' }} />
                         {isExpanded && <span style={{ fontSize: '14px', fontWeight: 500 }}>My Tasks</span>}
                     </NavLink>
                 </div>
             </nav>
+
+            {/* --- LOGOUT BUTTON (Nằm dưới cùng) --- */}
+            <div style={{ padding: '16px', borderTop: '1px solid var(--border-color)' }}>
+                <button
+                    onClick={handleLogout}
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        color: '#ef4444', // Màu đỏ cảnh báo
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        justifyContent: isExpanded ? 'flex-start' : 'center',
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden'
+                    }}
+                    title="Logout"
+                    // Hiệu ứng hover inline: Nền đỏ nhạt
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                    <FaRightFromBracket size={20} style={{ minWidth: '20px' }} />
+                    {isExpanded && <span style={{ fontSize: '14px', fontWeight: 600 }}>Logout</span>}
+                </button>
+            </div>
+
         </aside>
     );
 };

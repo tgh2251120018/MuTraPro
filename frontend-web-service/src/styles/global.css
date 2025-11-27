@@ -263,6 +263,100 @@ body {
     text-decoration: underline;
 }
 
+/* ... (Code cũ giữ nguyên) ... */
+
+/* --- 9. Modal & Overlay --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Màu đen bán trong suốt */
+    backdrop-filter: blur(4px);
+    /* Hiệu ứng làm mờ nền đằng sau */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    /* Nằm trên cùng */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content kế thừa style của .card nhưng có kích thước riêng */
+.modal-content {
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    /* Không quá chiều cao màn hình */
+    overflow-y: auto;
+    /* Cuộn nếu nội dung dài */
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.open .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+}
+
+.close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-danger);
+}
+
+/* Custom File Input Style */
+.file-upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--bg-input);
+}
+
+.file-upload-zone:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
 /* Animation */
 @keyframes fadeIn {
     from {
