@@ -70,8 +70,8 @@ const Login: React.FC = () => {
 
             <form onSubmit={handleLogin} className="flex flex-col gap-2">
                 <Input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     label="Email Address"
                     placeholder="example@gmail.com"
                     type="text"
@@ -109,6 +109,6 @@ const Login: React.FC = () => {
 
 export default Login;
 
-function updateUser(userData: User) {
-    throw new Error('Function not implemented.');
-}
+// function updateUser(userData: User) {
+//     throw new Error('Function not implemented.');
+// }
