@@ -1,0 +1,166 @@
+.dashboard-container {
+    display: flex;
+    flex: 1;
+    /* Chiếm hết chiều cao còn lại của RootLayout */
+    width: 100%;
+    overflow: hidden;
+    /* Ngăn cuộn ở container ngoài */
+    background-color: var(--bg-app);
+    /* Đảm bảo nền đồng bộ */
+    position: relative;
+
+
+}
+
+/* Sidebar (Cabinet Drawer) */
+.sidebar {
+    background-color: var(--bg-card);
+
+    /* Đảm bảo sidebar luôn cao 100% chiều cao của cha nó (dashboard-container) */
+    height: 100%;
+    min-height: 100%;
+
+    border-right: 1px solid var(--border-color);
+    box-shadow: var(--shadow-effect);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    position: relative;
+}
+
+/* Trạng thái Mở rộng */
+.sidebar.expanded {
+    width: 280px;
+}
+
+/* Trạng thái Thu nhỏ */
+.sidebar.collapsed {
+    width: 80px;
+    /* Đủ để hiện icon */
+}
+
+/* --- Sidebar Profile Section --- */
+.sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    /* Ẩn text khi thu nhỏ */
+    white-space: nowrap;
+}
+
+/* Avatar khung vuông bo tròn */
+.user-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    /* Bo tròn vừa phải (Squircle) */
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    object-fit: cover;
+}
+
+/* Khi thu nhỏ, Avatar nhỏ lại chút */
+.sidebar.collapsed .user-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+/* Thông tin Text (Tên, Role) */
+.user-info {
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    width: 100%;
+}
+
+.sidebar.collapsed .user-info {
+    opacity: 0;
+    height: 0;
+    visibility: hidden;
+    margin: 0;
+}
+
+.display-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-main);
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.username {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 2px 0;
+}
+
+.user-role {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: rgba(37, 99, 235, 0.1);
+    /* Màu nền nhạt của Primary */
+    color: var(--primary-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+/* --- Sidebar Navigation --- */
+.sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+}
+
+/* Nút Toggle thu nhỏ */
+.sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    /* Nằm đè lên viền */
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.sidebar-toggle:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* --- Content Area --- */
+.dashboard-content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    /* Cho phép cuộn nội dung chính */
+    padding: 24px;
+    background-color: transparent;
+    /* Thừa hưởng nền của RootLayout */
+}

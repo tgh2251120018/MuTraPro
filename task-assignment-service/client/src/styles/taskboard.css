@@ -1,0 +1,28 @@
+.taskboard-container {
+  width: 100%;
+}
+
+.taskboard-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.taskboard-columns {
+  display: flex;
+  gap: 20px;
+}
+
+.task-column {
+  background: #0d1b2a;
+  flex: 1;
+  padding: 15px;
+  border-radius: 8px;
+  min-height: 500px;
+}
+
+.task-card {
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}

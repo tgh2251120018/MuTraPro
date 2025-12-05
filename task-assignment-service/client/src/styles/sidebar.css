@@ -1,0 +1,22 @@
+.sidebar {
+  width: 200px;
+  background: #111827;
+  color: #cbd5e1;
+  padding: 20px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.sidebar-menu li {
+  list-style: none;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.sidebar-menu .active {
+  color: #6366f1;
+}

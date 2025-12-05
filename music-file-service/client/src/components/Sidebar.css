@@ -1,0 +1,26 @@
+.sidebar {
+    width: 230px;
+    background: #0a1220;
+    height: 100vh;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 22px;
+    margin-bottom: 25px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 12px 0;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    opacity: 1;
+}

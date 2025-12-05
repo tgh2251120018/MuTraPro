@@ -1,0 +1,76 @@
+body {
+    background: #0d1522;
+    color: white;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.layout {
+    display: flex;
+}
+
+.sidebar {
+    width: 230px;
+    background: #0a1220;
+    height: 100vh;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 22px;
+    margin-bottom: 25px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 12px 0;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    opacity: 1;
+}
+
+.content {
+    flex: 1;
+    padding: 40px;
+}
+
+.upload-section {
+    margin-bottom: 20px;
+}
+
+.upload-btn {
+    background: #3b82f6;
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.file-card {
+    background: #101a2e;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.play-btn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    background: #2563eb;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
